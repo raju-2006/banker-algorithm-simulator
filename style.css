@@ -1,0 +1,518 @@
+/* =========================================================
+   BANKER'S ALGORITHM SIMULATOR
+   STYLE SHEET
+   ========================================================= */
+
+/* ---------- GLOBAL ---------- */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #f4f6fb;
+    color: #1f2937;
+    line-height: 1.6;
+}
+
+.container {
+    width: 92%;
+    max-width: 1200px;
+    margin: 30px auto;
+}
+
+
+/* ---------- HEADER ---------- */
+
+.header {
+    background: linear-gradient(135deg, #312e81, #4f46e5);
+    color: white;
+    padding: 35px 20px;
+    text-align: center;
+}
+
+.header h1 {
+    font-size: 34px;
+    margin-bottom: 8px;
+}
+
+.header p {
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+
+/* ---------- CARDS ---------- */
+
+.card {
+    background: white;
+    border-radius: 14px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.card h2 {
+    color: #312e81;
+    margin-bottom: 15px;
+    font-size: 23px;
+}
+
+.card h3 {
+    color: #4338ca;
+    margin: 20px 0 10px;
+}
+
+
+/* ---------- INTRODUCTION ---------- */
+
+.intro {
+    border-left: 5px solid #4f46e5;
+}
+
+.intro p {
+    color: #4b5563;
+}
+
+
+/* ---------- SECTION NUMBER ---------- */
+
+.section-number {
+    display: inline-block;
+    background: #4f46e5;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    margin-right: 8px;
+}
+
+
+/* ---------- FORM GRID ---------- */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    margin-top: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+
+/* ---------- INPUTS ---------- */
+
+input,
+select {
+    width: 100%;
+    padding: 11px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    font-size: 15px;
+    outline: none;
+}
+
+input:focus,
+select:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+}
+
+
+/* ---------- RADIO BUTTONS ---------- */
+
+.radio-group {
+    display: flex;
+    gap: 25px;
+    margin-top: 10px;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    cursor: pointer;
+}
+
+.radio-option input {
+    width: auto;
+}
+
+
+/* ---------- BUTTONS ---------- */
+
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+button {
+    border: none;
+    border-radius: 7px;
+    padding: 11px 20px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    opacity: 0.92;
+}
+
+.primary-btn {
+    background: #4f46e5;
+    color: white;
+}
+
+.success-btn {
+    background: #059669;
+    color: white;
+}
+
+.warning-btn {
+    background: #d97706;
+    color: white;
+}
+
+.danger-btn {
+    background: #dc2626;
+    color: white;
+}
+
+.secondary-btn {
+    background: #64748b;
+    color: white;
+}
+
+
+/* ---------- TABLES ---------- */
+
+.matrix-wrapper {
+    overflow-x: auto;
+    margin-top: 15px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 500px;
+}
+
+th {
+    background: #eef2ff;
+    color: #312e81;
+    font-weight: bold;
+}
+
+th,
+td {
+    border: 1px solid #dbe1ea;
+    padding: 10px;
+    text-align: center;
+}
+
+td:first-child,
+th:first-child {
+    font-weight: bold;
+}
+
+
+/* ---------- MATRIX INPUTS ---------- */
+
+.matrix-input {
+    width: 75px;
+    text-align: center;
+    padding: 8px;
+}
+
+.resource-input {
+    width: 100px;
+    text-align: center;
+    padding: 8px;
+}
+
+
+/* ---------- ERROR ---------- */
+
+.error {
+    display: none;
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+    padding: 12px;
+    border-radius: 7px;
+    margin-top: 15px;
+}
+
+
+/* ---------- INFORMATION BOX ---------- */
+
+.info-box {
+    background: #eef2ff;
+    border: 1px solid #c7d2fe;
+    color: #3730a3;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+
+/* ---------- AVAILABLE RESOURCE ---------- */
+
+.available-box {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #065f46;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+    font-size: 17px;
+}
+
+
+/* ---------- NEED MATRIX ---------- */
+
+.need-table td {
+    font-weight: bold;
+}
+
+
+/* ---------- SAFETY STEP CARD ---------- */
+
+.step-card {
+    border: 1px solid #dbe1ea;
+    border-radius: 10px;
+    padding: 18px;
+    margin-top: 15px;
+    background: #fafafa;
+}
+
+.step-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.step-header strong {
+    color: #312e81;
+}
+
+.step-status {
+    background: #dcfce7;
+    color: #166534;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+
+/* ---------- STEP VALUES ---------- */
+
+.step-values {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.value-box {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.value-box span {
+    display: block;
+    color: #64748b;
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+.value-box strong {
+    color: #1e293b;
+}
+
+
+/* ---------- FINAL RESULT ---------- */
+
+.final-result {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    font-size: 18px;
+}
+
+.safe {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+}
+
+.unsafe {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+.safe-sequence {
+    font-size: 20px;
+    font-weight: bold;
+    color: #312e81;
+    margin-top: 8px;
+}
+
+
+/* ---------- RESOURCE REQUEST ---------- */
+
+.request-section {
+    margin-top: 15px;
+}
+
+.request-vector-table {
+    margin-top: 15px;
+}
+
+.request-vector-input {
+    width: 100px;
+    text-align: center;
+}
+
+
+/* ---------- REQUEST DECISION ---------- */
+
+.request-decision {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    display: none;
+}
+
+.request-decision.granted {
+    display: block;
+    background: #dcfce7;
+    border: 1px solid #86efac;
+    color: #166534;
+}
+
+.request-decision.denied {
+    display: block;
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    color: #991b1b;
+}
+
+
+/* ---------- REQUEST CHECK LIST ---------- */
+
+.check-list {
+    margin-top: 15px;
+}
+
+.check-item {
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    background: white;
+}
+
+.check-pass {
+    border-left: 5px solid #16a34a;
+}
+
+.check-fail {
+    border-left: 5px solid #dc2626;
+}
+
+
+/* ---------- REQUEST STEPS ---------- */
+
+.request-step {
+    margin-top: 12px;
+    padding: 12px;
+    background: white;
+    border-radius: 7px;
+    border: 1px solid #e2e8f0;
+}
+
+
+/* ---------- FORMULAS ---------- */
+
+.formula {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 12px;
+    font-family: "Courier New", monospace;
+}
+
+
+/* ---------- FOOTER ---------- */
+
+.footer {
+    text-align: center;
+    padding: 25px;
+    background: #1e1b4b;
+    color: white;
+    margin-top: 40px;
+}
+
+
+/* ---------- UTILITY ---------- */
+
+.hidden {
+    display: none;
+}
+
+
+/* ---------- RESPONSIVE DESIGN ---------- */
+
+@media (max-width: 700px) {
+
+    .header h1 {
+        font-size: 26px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .step-values {
+        grid-template-columns: 1fr;
+    }
+
+    .container {
+        width: 95%;
+    }
+
+    .card {
+        padding: 18px;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+
+    button {
+        width: 100%;
+    }
+
+    .radio-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

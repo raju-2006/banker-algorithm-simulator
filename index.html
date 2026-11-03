@@ -1,0 +1,2546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banker's Algorithm Simulator</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f4f6fb;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #312e81, #4f46e5);
+            color: white;
+            padding: 35px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 34px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .card h2 {
+            color: #312e81;
+            margin-bottom: 15px;
+            font-size: 23px;
+        }
+
+        .card h3 {
+            color: #4338ca;
+            margin: 20px 0 10px;
+        }
+
+        .intro {
+            border-left: 5px solid #4f46e5;
+        }
+
+        .intro p {
+            color: #4b5563;
+        }
+
+        .section-number {
+            display: inline-block;
+            background: #4f46e5;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-right: 8px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            margin-top: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #4f46e5;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 25px;
+            margin-top: 10px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            cursor: pointer;
+        }
+
+        .radio-option input {
+            width: auto;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        button {
+            border: none;
+            border-radius: 7px;
+            padding: 11px 20px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            opacity: 0.92;
+        }
+
+        .primary-btn {
+            background: #4f46e5;
+            color: white;
+        }
+
+        .success-btn {
+            background: #059669;
+            color: white;
+        }
+
+        .warning-btn {
+            background: #d97706;
+            color: white;
+        }
+
+        .danger-btn {
+            background: #dc2626;
+            color: white;
+        }
+
+        .secondary-btn {
+            background: #64748b;
+            color: white;
+        }
+
+        .matrix-wrapper {
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            min-width: 500px;
+        }
+
+        th {
+            background: #eef2ff;
+            color: #312e81;
+            font-weight: bold;
+        }
+
+        th,
+        td {
+            border: 1px solid #dbe1ea;
+            padding: 10px;
+            text-align: center;
+        }
+
+        td:first-child,
+        th:first-child {
+            font-weight: bold;
+        }
+
+        .matrix-input {
+            width: 75px;
+            text-align: center;
+            padding: 8px;
+        }
+
+        .resource-input {
+            width: 100px;
+            text-align: center;
+            padding: 8px;
+        }
+
+        .error {
+            display: none;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            padding: 12px;
+            border-radius: 7px;
+            margin-top: 15px;
+        }
+
+        .info-box {
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            color: #3730a3;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .available-box {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 17px;
+        }
+
+        .need-table td {
+            font-weight: bold;
+        }
+
+        .step-card {
+            border: 1px solid #dbe1ea;
+            border-radius: 10px;
+            padding: 18px;
+            margin-top: 15px;
+            background: #fafafa;
+        }
+
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .step-header strong {
+            color: #312e81;
+        }
+
+        .step-status {
+            background: #dcfce7;
+            color: #166534;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .step-values {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .value-box {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .value-box span {
+            display: block;
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .value-box strong {
+            color: #1e293b;
+        }
+
+        .final-result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 18px;
+        }
+
+        .safe {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        .unsafe {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        .safe-sequence {
+            font-size: 20px;
+            font-weight: bold;
+            color: #312e81;
+            margin-top: 8px;
+        }
+
+        .request-section {
+            margin-top: 15px;
+        }
+
+        .request-vector-table {
+            margin-top: 15px;
+        }
+
+        .request-vector-input {
+            width: 100px;
+            text-align: center;
+        }
+
+        .request-decision {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .request-decision.granted {
+            display: block;
+            background: #dcfce7;
+            border: 1px solid #86efac;
+            color: #166534;
+        }
+
+        .request-decision.denied {
+            display: block;
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+            color: #991b1b;
+        }
+
+        .check-list {
+            margin-top: 15px;
+        }
+
+        .check-item {
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            background: white;
+        }
+
+        .check-pass {
+            border-left: 5px solid #16a34a;
+        }
+
+        .check-fail {
+            border-left: 5px solid #dc2626;
+        }
+
+        .request-step {
+            margin-top: 12px;
+            padding: 12px;
+            background: white;
+            border-radius: 7px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .formula {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-family: "Courier New", monospace;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 25px;
+            background: #1e1b4b;
+            color: white;
+            margin-top: 40px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 700px) {
+            .header h1 {
+                font-size: 26px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .step-values {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                width: 95%;
+            }
+
+            .card {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <h1>Banker's Algorithm Simulator</h1>
+    <p>Deadlock Avoidance and Resource Allocation</p>
+</header>
+
+<main class="container">
+
+    <!-- INTRODUCTION -->
+    <section class="card intro">
+        <h2>About Banker's Algorithm</h2>
+        <p>
+            Banker's Algorithm is a deadlock avoidance algorithm used by an operating
+            system to decide whether allocating resources to processes will keep the
+            system in a safe state.
+        </p>
+
+        <p style="margin-top:10px;">
+            This simulator accepts the Allocation Matrix, Maximum Matrix and resource
+            information. It calculates the Need Matrix, Available Resources, Safe
+            Sequence and also checks individual resource requests.
+        </p>
+    </section>
+
+    <!-- SECTION 1 -->
+    <section class="card">
+        <h2>
+            <span class="section-number">01</span>
+            System Configuration
+        </h2>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label for="processCount">Number of Processes</label>
+                <input type="number" id="processCount" min="1" max="10" value="5">
+            </div>
+
+            <div class="form-group">
+                <label for="resourceCount">Number of Resource Types</label>
+                <input type="number" id="resourceCount" min="1" max="10" value="3">
+            </div>
+
+        </div>
+
+        <div style="margin-top:20px;">
+            <label><strong>Resource Information Type</strong></label>
+
+            <div class="radio-group">
+
+                <label class="radio-option">
+                    <input type="radio"
+                           name="resourceMode"
+                           value="total"
+                           checked
+                           onchange="changeResourceMode()">
+                    Total Resources
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio"
+                           name="resourceMode"
+                           value="available"
+                           onchange="changeResourceMode()">
+                    Available Resources
+                </label>
+
+            </div>
+        </div>
+
+        <div class="info-box">
+            <strong>Note:</strong>
+            Choose <b>Total Resources</b> if the question gives the total number
+            of resources. Choose <b>Available Resources</b> if the question directly
+            provides the available vector.
+        </div>
+
+        <div class="button-group">
+
+            <button class="primary-btn" onclick="generateMatrices()">
+                Generate Matrices
+            </button>
+
+            <button class="success-btn" onclick="loadExample()">
+                Load Classic Example
+            </button>
+
+            <button class="secondary-btn" onclick="resetSimulator()">
+                Reset
+            </button>
+
+        </div>
+
+        <div id="errorMessage" class="error"></div>
+    </section>
+
+    <!-- SECTION 2 -->
+    <section class="card">
+        <h2>
+            <span class="section-number">02</span>
+            Allocation Matrix
+        </h2>
+
+        <p>
+            Enter the resources currently allocated to each process.
+        </p>
+
+        <div id="allocationContainer" class="matrix-wrapper"></div>
+    </section>
+
+    <!-- SECTION 3 -->
+    <section class="card">
+        <h2>
+            <span class="section-number">03</span>
+            Maximum Matrix
+        </h2>
+
+        <p>
+            Enter the maximum resources each process may require.
+        </p>
+
+        <div id="maximumContainer" class="matrix-wrapper"></div>
+    </section>
+
+    <!-- SECTION 4 -->
+    <section class="card">
+        <h2>
+            <span class="section-number">04</span>
+            Resource Information
+        </h2>
+
+        <div id="resourceContainer"></div>
+
+        <div class="button-group">
+            <button class="primary-btn" onclick="runBankersAlgorithm()">
+                Run Banker's Algorithm
+            </button>
+        </div>
+    </section>
+
+    <!-- SECTION 5 -->
+    <section class="card" id="resultSection">
+
+        <h2>
+            <span class="section-number">05</span>
+            Safety Analysis
+        </h2>
+
+        <div id="availableResult"></div>
+
+        <h3>Need Matrix</h3>
+        <div id="needContainer" class="matrix-wrapper"></div>
+
+        <h3>Safety Algorithm Steps</h3>
+        <div id="stepsContainer"></div>
+
+        <div id="finalResult"></div>
+
+    </section>
+
+    <!-- SECTION 6 -->
+    <section class="card">
+
+        <h2>
+            <span class="section-number">06</span>
+            Resource Request Algorithm
+        </h2>
+
+        <p>
+            A process may request additional resources while the system is running.
+            The request can be granted only if:
+        </p>
+
+        <div class="formula">
+            Request[i] &le; Need[i]
+        </div>
+
+        <div class="formula">
+            Request[i] &le; Available
+        </div>
+
+        <p style="margin-top:15px;">
+            After temporarily granting the request, the system must still remain
+            in a safe state.
+        </p>
+
+        <div class="form-grid request-section">
+
+            <div class="form-group">
+                <label for="requestProcess">
+                    Requesting Process
+                </label>
+
+                <select id="requestProcess"
+                        onchange="createRequestVector()">
+                </select>
+            </div>
+
+        </div>
+
+        <div id="requestVectorContainer"
+             class="matrix-wrapper">
+        </div>
+
+        <div class="button-group">
+
+            <button class="primary-btn"
+                    onclick="checkResourceRequest()">
+                Check Resource Request
+            </button>
+
+            <button class="warning-btn"
+                    onclick="loadRequestExample()">
+                Load Request Example
+            </button>
+
+        </div>
+
+        <div id="requestError" class="error"></div>
+
+        <div id="requestResult">
+
+            <div id="requestDecision"
+                 class="request-decision">
+            </div>
+
+            <div id="requestSteps"></div>
+
+        </div>
+
+    </section>
+
+    <!-- SECTION 7 -->
+    <section class="card">
+
+        <h2>
+            <span class="section-number">07</span>
+            Important Formulas
+        </h2>
+
+        <h3>Need Matrix</h3>
+
+        <div class="formula">
+            Need[i][j] = Maximum[i][j] - Allocation[i][j]
+        </div>
+
+        <h3>Available Resources</h3>
+
+        <div class="formula">
+            Available[j] = Total[j] - Sum of all Allocation[i][j]
+        </div>
+
+        <h3>Safety Condition</h3>
+
+        <div class="formula">
+            Need[i] &le; Work
+        </div>
+
+        <p style="margin-top:10px;">
+            If all processes can finish, the system is in a
+            <strong>SAFE STATE</strong>. Otherwise, the system is in an
+            <strong>UNSAFE STATE</strong>.
+        </p>
+
+        <h3>Resource Request</h3>
+
+        <div class="formula">
+            Request[i] &le; Need[i]
+        </div>
+
+        <div class="formula">
+            Request[i] &le; Available
+        </div>
+
+        <div class="formula">
+            Available = Available - Request
+        </div>
+
+        <div class="formula">
+            Allocation[i] = Allocation[i] + Request
+        </div>
+
+        <div class="formula">
+            Need[i] = Need[i] - Request
+        </div>
+
+    </section>
+
+</main>
+
+<footer class="footer">
+    <p>Banker's Algorithm Simulator | Operating Systems</p>
+</footer>
+
+
+<script>
+
+    /*
+     * ============================================================
+     * BANKER'S ALGORITHM SIMULATOR
+     * All JavaScript is included in this single HTML file.
+     * ============================================================
+     */
+
+    window.onload = function () {
+        generateMatrices();
+    };
+
+
+    /*
+     * ------------------------------------------------------------
+     * GENERATE MATRICES
+     * ------------------------------------------------------------
+     */
+
+    function generateMatrices() {
+
+        hideError();
+
+        const processCount =
+            parseInt(document.getElementById("processCount").value);
+
+        const resourceCount =
+            parseInt(document.getElementById("resourceCount").value);
+
+        if (isNaN(processCount) ||
+            isNaN(resourceCount) ||
+            processCount < 1 ||
+            resourceCount < 1) {
+
+            showError("Please enter valid numbers of processes and resources.");
+            return;
+        }
+
+        if (processCount > 10 || resourceCount > 10) {
+
+            showError(
+                "Please use maximum 10 processes and 10 resource types."
+            );
+
+            return;
+        }
+
+        createMatrix(
+            "allocationContainer",
+            "allocation",
+            processCount,
+            resourceCount
+        );
+
+        createMatrix(
+            "maximumContainer",
+            "maximum",
+            processCount,
+            resourceCount
+        );
+
+        createResourceInputs(resourceCount);
+
+        initializeRequestSection();
+
+        clearResults();
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * CREATE MATRIX
+     * ------------------------------------------------------------
+     */
+
+    function createMatrix(
+        containerId,
+        matrixName,
+        rows,
+        columns
+    ) {
+
+        const container =
+            document.getElementById(containerId);
+
+        let html = "";
+
+        html += "<table>";
+
+        html += "<thead>";
+        html += "<tr>";
+        html += "<th>Process</th>";
+
+        for (let j = 0; j < columns; j++) {
+
+            html += "<th>R" + j + "</th>";
+
+        }
+
+        html += "</tr>";
+        html += "</thead>";
+
+        html += "<tbody>";
+
+        for (let i = 0; i < rows; i++) {
+
+            html += "<tr>";
+
+            html += "<td>P" + i + "</td>";
+
+            for (let j = 0; j < columns; j++) {
+
+                html +=
+                    '<td>' +
+                    '<input ' +
+                    'type="number" ' +
+                    'min="0" ' +
+                    'value="0" ' +
+                    'class="matrix-input ' +
+                    matrixName +
+                    '-input" ' +
+                    'data-row="' + i + '" ' +
+                    'data-col="' + j + '">' +
+                    '</td>';
+
+            }
+
+            html += "</tr>";
+        }
+
+        html += "</tbody>";
+        html += "</table>";
+
+        container.innerHTML = html;
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * CREATE RESOURCE INPUTS
+     * ------------------------------------------------------------
+     */
+
+    function createResourceInputs(resourceCount) {
+
+        const container =
+            document.getElementById("resourceContainer");
+
+        const mode =
+            document.querySelector(
+                'input[name="resourceMode"]:checked'
+            ).value;
+
+        let title =
+            mode === "total"
+                ? "Total Resources"
+                : "Available Resources";
+
+        let html = "";
+
+        html += "<h3>" + title + "</h3>";
+
+        html += '<div class="matrix-wrapper">';
+        html += "<table>";
+        html += "<thead><tr>";
+
+        for (let j = 0; j < resourceCount; j++) {
+
+            html += "<th>R" + j + "</th>";
+
+        }
+
+        html += "</tr></thead>";
+
+        html += "<tbody><tr>";
+
+        for (let j = 0; j < resourceCount; j++) {
+
+            html +=
+                '<td>' +
+                '<input ' +
+                'type="number" ' +
+                'min="0" ' +
+                'value="0" ' +
+                'class="resource-input" ' +
+                'data-resource="' + j + '">' +
+                '</td>';
+
+        }
+
+        html += "</tr></tbody>";
+        html += "</table>";
+        html += "</div>";
+
+        container.innerHTML = html;
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * CHANGE TOTAL / AVAILABLE MODE
+     * ------------------------------------------------------------
+     */
+
+    function changeResourceMode() {
+
+        const resourceCount =
+            parseInt(document.getElementById("resourceCount").value);
+
+        if (!isNaN(resourceCount) && resourceCount > 0) {
+
+            createResourceInputs(resourceCount);
+
+        }
+
+        clearResults();
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * GET MATRIX FROM INPUTS
+     * ------------------------------------------------------------
+     */
+
+    function getMatrix(className) {
+
+        const inputs =
+            document.querySelectorAll("." + className + "-input");
+
+        const processCount =
+            parseInt(document.getElementById("processCount").value);
+
+        const resourceCount =
+            parseInt(document.getElementById("resourceCount").value);
+
+        let matrix = [];
+
+        for (let i = 0; i < processCount; i++) {
+
+            matrix[i] = [];
+
+            for (let j = 0; j < resourceCount; j++) {
+
+                matrix[i][j] = 0;
+
+            }
+        }
+
+        inputs.forEach(function (input) {
+
+            const row =
+                parseInt(input.dataset.row);
+
+            const col =
+                parseInt(input.dataset.col);
+
+            matrix[row][col] =
+                parseInt(input.value) || 0;
+
+        });
+
+        return matrix;
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * GET RESOURCE VECTOR
+     * ------------------------------------------------------------
+     */
+
+    function getResourceVector() {
+
+        const inputs =
+            document.querySelectorAll(".resource-input");
+
+        let vector = [];
+
+        inputs.forEach(function (input) {
+
+            vector.push(
+                parseInt(input.value) || 0
+            );
+
+        });
+
+        return vector;
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * CALCULATE NEED
+     * ------------------------------------------------------------
+     */
+
+    function calculateNeed(maximum, allocation) {
+
+        let need = [];
+
+        for (let i = 0; i < maximum.length; i++) {
+
+            need[i] = [];
+
+            for (let j = 0; j < maximum[i].length; j++) {
+
+                need[i][j] =
+                    maximum[i][j] -
+                    allocation[i][j];
+
+            }
+
+        }
+
+        return need;
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * CALCULATE AVAILABLE FROM TOTAL
+     * ------------------------------------------------------------
+     */
+
+    function calculateAvailableFromTotal(
+        total,
+        allocation
+    ) {
+
+        let available = [];
+
+        for (let j = 0; j < total.length; j++) {
+
+            let allocated = 0;
+
+            for (let i = 0; i < allocation.length; i++) {
+
+                allocated += allocation[i][j];
+
+            }
+
+            available[j] =
+                total[j] - allocated;
+        }
+
+        return available;
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * FORMAT VECTOR
+     * ------------------------------------------------------------
+     */
+
+    function formatVector(vector) {
+
+        return "[" + vector.join(", ") + "]";
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * CHECK MATRIX VALIDITY
+     * ------------------------------------------------------------
+     */
+
+    function validateMatrices(
+        allocation,
+        maximum
+    ) {
+
+        for (let i = 0; i < allocation.length; i++) {
+
+            for (let j = 0; j < allocation[i].length; j++) {
+
+                if (allocation[i][j] < 0 ||
+                    maximum[i][j] < 0) {
+
+                    return false;
+                }
+
+                if (maximum[i][j] <
+                    allocation[i][j]) {
+
+                    return false;
+                }
+
+            }
+
+        }
+
+        return true;
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * RUN BANKER'S ALGORITHM
+     * ------------------------------------------------------------
+     */
+
+    function runBankersAlgorithm() {
+
+        hideError();
+
+        const allocation =
+            getMatrix("allocation");
+
+        const maximum =
+            getMatrix("maximum");
+
+        if (!validateMatrices(
+            allocation,
+            maximum
+        )) {
+
+            showError(
+                "Maximum value cannot be smaller than Allocation value. Please check the matrices."
+            );
+
+            return;
+        }
+
+        const need =
+            calculateNeed(
+                maximum,
+                allocation
+            );
+
+        const mode =
+            document.querySelector(
+                'input[name="resourceMode"]:checked'
+            ).value;
+
+        let available;
+
+        const resourceVector =
+            getResourceVector();
+
+        if (mode === "total") {
+
+            available =
+                calculateAvailableFromTotal(
+                    resourceVector,
+                    allocation
+                );
+
+            for (let j = 0; j < available.length; j++) {
+
+                if (available[j] < 0) {
+
+                    showError(
+                        "Total resources cannot be smaller than the currently allocated resources."
+                    );
+
+                    return;
+                }
+
+            }
+
+        } else {
+
+            available =
+                resourceVector.slice();
+
+        }
+
+        displayAvailable(available);
+
+        displayMatrix(
+            "needContainer",
+            need
+        );
+
+        executeSafetyAlgorithm(
+            allocation,
+            need,
+            available
+        );
+
+        initializeRequestSection();
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * DISPLAY AVAILABLE
+     * ------------------------------------------------------------
+     */
+
+    function displayAvailable(available) {
+
+        document.getElementById(
+            "availableResult"
+        ).innerHTML =
+            '<div class="available-box">' +
+            '<strong>Available Resources:</strong> ' +
+            formatVector(available) +
+            '</div>';
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * DISPLAY MATRIX
+     * ------------------------------------------------------------
+     */
+
+    function displayMatrix(
+        containerId,
+        matrix
+    ) {
+
+        const container =
+            document.getElementById(containerId);
+
+        if (!matrix || matrix.length === 0) {
+
+            container.innerHTML = "";
+            return;
+        }
+
+        let html = "";
+
+        html += '<table class="need-table">';
+
+        html += "<thead><tr>";
+        html += "<th>Process</th>";
+
+        for (
+            let j = 0;
+            j < matrix[0].length;
+            j++
+        ) {
+
+            html += "<th>R" + j + "</th>";
+
+        }
+
+        html += "</tr></thead>";
+
+        html += "<tbody>";
+
+        for (
+            let i = 0;
+            i < matrix.length;
+            i++
+        ) {
+
+            html += "<tr>";
+
+            html += "<td>P" + i + "</td>";
+
+            for (
+                let j = 0;
+                j < matrix[i].length;
+                j++
+            ) {
+
+                html +=
+                    "<td>" +
+                    matrix[i][j] +
+                    "</td>";
+
+            }
+
+            html += "</tr>";
+        }
+
+        html += "</tbody>";
+        html += "</table>";
+
+        container.innerHTML = html;
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * CAN PROCESS EXECUTE?
+     * ------------------------------------------------------------
+     */
+
+    function canExecute(
+        needRow,
+        work
+    ) {
+
+        for (
+            let j = 0;
+            j < needRow.length;
+            j++
+        ) {
+
+            if (needRow[j] > work[j]) {
+
+                return false;
+
+            }
+
+        }
+
+        return true;
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * SAFETY ALGORITHM
+     * ------------------------------------------------------------
+     */
+
+    function executeSafetyAlgorithm(
+        allocation,
+        need,
+        available
+    ) {
+
+        const stepsContainer =
+            document.getElementById(
+                "stepsContainer"
+            );
+
+        const finalResult =
+            document.getElementById(
+                "finalResult"
+            );
+
+        stepsContainer.innerHTML = "";
+
+        finalResult.innerHTML = "";
+
+        let work =
+            available.slice();
+
+        let finish =
+            new Array(allocation.length).fill(false);
+
+        let safeSequence = [];
+
+        let progress = true;
+
+        let stepNumber = 1;
+
+        while (
+            safeSequence.length <
+                allocation.length &&
+            progress
+        ) {
+
+            progress = false;
+
+            for (
+                let i = 0;
+                i < allocation.length;
+                i++
+            ) {
+
+                if (finish[i]) {
+                    continue;
+                }
+
+                if (
+                    canExecute(
+                        need[i],
+                        work
+                    )
+                ) {
+
+                    const workBefore =
+                        work.slice();
+
+                    for (
+                        let j = 0;
+                        j < work.length;
+                        j++
+                    ) {
+
+                        work[j] +=
+                            allocation[i][j];
+
+                    }
+
+                    finish[i] = true;
+
+                    safeSequence.push(i);
+
+                    progress = true;
+
+                    const card =
+                        document.createElement(
+                            "div"
+                        );
+
+                    card.className =
+                        "step-card";
+
+                    card.innerHTML =
+                        '<div class="step-header">' +
+                        '<strong>Step ' +
+                        stepNumber +
+                        ': Execute P' +
+                        i +
+                        '</strong>' +
+                        '<span class="step-status">Can Execute</span>' +
+                        '</div>' +
+
+                        '<div class="step-values">' +
+
+                        '<div class="value-box">' +
+                        '<span>Need[P' +
+                        i +
+                        ']</span>' +
+                        '<strong>' +
+                        formatVector(need[i]) +
+                        '</strong>' +
+                        '</div>' +
+
+                        '<div class="value-box">' +
+                        '<span>Work Before</span>' +
+                        '<strong>' +
+                        formatVector(workBefore) +
+                        '</strong>' +
+                        '</div>' +
+
+                        '<div class="value-box">' +
+                        '<span>Work After</span>' +
+                        '<strong>' +
+                        formatVector(work) +
+                        '</strong>' +
+                        '</div>' +
+
+                        '</div>' +
+
+                        '<p style="margin-top:12px;">' +
+                        'Since Need[P' +
+                        i +
+                        '] &le; Work, process P' +
+                        i +
+                        ' can complete. ' +
+                        'Its allocated resources are released back to Work.' +
+                        '</p>';
+
+                    stepsContainer.appendChild(
+                        card
+                    );
+
+                    stepNumber++;
+                }
+            }
+        }
+
+        if (
+            safeSequence.length ===
+            allocation.length
+        ) {
+
+            finalResult.className =
+                "final-result safe";
+
+            finalResult.innerHTML =
+                "<strong>SAFE STATE</strong>" +
+                "<p style='margin-top:8px;'>" +
+                "All processes can complete without causing deadlock." +
+                "</p>" +
+                "<p class='safe-sequence'>" +
+                "Safe Sequence: " +
+                safeSequence
+                    .map(function (p) {
+                        return "P" + p;
+                    })
+                    .join(" → ") +
+                "</p>";
+
+        } else {
+
+            let unfinished = [];
+
+            for (
+                let i = 0;
+                i < finish.length;
+                i++
+            ) {
+
+                if (!finish[i]) {
+
+                    unfinished.push(
+                        "P" + i
+                    );
+
+                }
+
+            }
+
+            finalResult.className =
+                "final-result unsafe";
+
+            finalResult.innerHTML =
+                "<strong>UNSAFE STATE</strong>" +
+                "<p style='margin-top:8px;'>" +
+                "The system cannot find a safe sequence for all processes." +
+                "</p>" +
+                "<p style='margin-top:8px;'>" +
+                "Processes that cannot complete: " +
+                unfinished.join(", ") +
+                "</p>";
+        }
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * INITIALIZE RESOURCE REQUEST SECTION
+     * ------------------------------------------------------------
+     */
+
+    function initializeRequestSection() {
+
+        const processCount =
+            parseInt(
+                document.getElementById(
+                    "processCount"
+                ).value
+            );
+
+        const select =
+            document.getElementById(
+                "requestProcess"
+            );
+
+        select.innerHTML = "";
+
+        for (
+            let i = 0;
+            i < processCount;
+            i++
+        ) {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value = i;
+            option.textContent =
+                "P" + i;
+
+            select.appendChild(
+                option
+            );
+        }
+
+        createRequestVector();
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * CREATE REQUEST VECTOR
+     * ------------------------------------------------------------
+     */
+
+    function createRequestVector() {
+
+        const resourceCount =
+            parseInt(
+                document.getElementById(
+                    "resourceCount"
+                ).value
+            );
+
+        const container =
+            document.getElementById(
+                "requestVectorContainer"
+            );
+
+        let html = "";
+
+        html += "<table class='request-vector-table'>";
+
+        html += "<thead><tr>";
+
+        for (
+            let j = 0;
+            j < resourceCount;
+            j++
+        ) {
+
+            html +=
+                "<th>R" + j + "</th>";
+
+        }
+
+        html += "</tr></thead>";
+
+        html += "<tbody><tr>";
+
+        for (
+            let j = 0;
+            j < resourceCount;
+            j++
+        ) {
+
+            html +=
+                '<td>' +
+                '<input ' +
+                'type="number" ' +
+                'min="0" ' +
+                'value="0" ' +
+                'class="request-vector-input" ' +
+                'data-request-col="' +
+                j +
+                '">' +
+                '</td>';
+
+        }
+
+        html += "</tr></tbody>";
+        html += "</table>";
+
+        container.innerHTML = html;
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * GET REQUEST VECTOR
+     * ------------------------------------------------------------
+     */
+
+    function getRequestVector() {
+
+        const inputs =
+            document.querySelectorAll(
+                ".request-vector-input"
+            );
+
+        let request = [];
+
+        inputs.forEach(function (input) {
+
+            request.push(
+                parseInt(input.value) || 0
+            );
+
+        });
+
+        return request;
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * VECTOR <= VECTOR
+     * ------------------------------------------------------------
+     */
+
+    function vectorLessThanOrEqual(
+        first,
+        second
+    ) {
+
+        for (
+            let j = 0;
+            j < first.length;
+            j++
+        ) {
+
+            if (first[j] > second[j]) {
+
+                return false;
+
+            }
+
+        }
+
+        return true;
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * SUBTRACT VECTORS
+     * ------------------------------------------------------------
+     */
+
+    function subtractVectors(
+        first,
+        second
+    ) {
+
+        let result = [];
+
+        for (
+            let j = 0;
+            j < first.length;
+            j++
+        ) {
+
+            result.push(
+                first[j] - second[j]
+            );
+
+        }
+
+        return result;
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * ADD VECTORS
+     * ------------------------------------------------------------
+     */
+
+    function addVectors(
+        first,
+        second
+    ) {
+
+        let result = [];
+
+        for (
+            let j = 0;
+            j < first.length;
+            j++
+        ) {
+
+            result.push(
+                first[j] + second[j]
+            );
+
+        }
+
+        return result;
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * TEMPORARY SAFETY CHECK
+     * ------------------------------------------------------------
+     */
+
+    function performTemporarySafetyCheck(
+        allocation,
+        need,
+        available
+    ) {
+
+        let work =
+            available.slice();
+
+        let finish =
+            new Array(
+                allocation.length
+            ).fill(false);
+
+        let sequence = [];
+
+        let progress = true;
+
+        while (
+            sequence.length <
+                allocation.length &&
+            progress
+        ) {
+
+            progress = false;
+
+            for (
+                let i = 0;
+                i < allocation.length;
+                i++
+            ) {
+
+                if (finish[i]) {
+                    continue;
+                }
+
+                if (
+                    canExecute(
+                        need[i],
+                        work
+                    )
+                ) {
+
+                    for (
+                        let j = 0;
+                        j < work.length;
+                        j++
+                    ) {
+
+                        work[j] +=
+                            allocation[i][j];
+
+                    }
+
+                    finish[i] = true;
+
+                    sequence.push(i);
+
+                    progress = true;
+                }
+            }
+        }
+
+        return {
+            safe:
+                sequence.length ===
+                allocation.length,
+
+            sequence:
+                sequence
+        };
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * CHECK RESOURCE REQUEST
+     * ------------------------------------------------------------
+     */
+
+    function checkResourceRequest() {
+
+        hideRequestError();
+
+        const allocation =
+            getMatrix("allocation");
+
+        const maximum =
+            getMatrix("maximum");
+
+        if (!validateMatrices(
+            allocation,
+            maximum
+        )) {
+
+            showRequestError(
+                "Please correct the Allocation and Maximum matrices first."
+            );
+
+            return;
+        }
+
+        const need =
+            calculateNeed(
+                maximum,
+                allocation
+            );
+
+        const mode =
+            document.querySelector(
+                'input[name="resourceMode"]:checked'
+            ).value;
+
+        const resourceVector =
+            getResourceVector();
+
+        let available;
+
+        if (mode === "total") {
+
+            available =
+                calculateAvailableFromTotal(
+                    resourceVector,
+                    allocation
+                );
+
+            for (
+                let j = 0;
+                j < available.length;
+                j++
+            ) {
+
+                if (available[j] < 0) {
+
+                    showRequestError(
+                        "Total resources are smaller than current allocation."
+                    );
+
+                    return;
+                }
+
+            }
+
+        } else {
+
+            available =
+                resourceVector.slice();
+
+        }
+
+        const process =
+            parseInt(
+                document.getElementById(
+                    "requestProcess"
+                ).value
+            );
+
+        const request =
+            getRequestVector();
+
+        if (request.length !==
+            available.length) {
+
+            showRequestError(
+                "Request vector size does not match the number of resources."
+            );
+
+            return;
+        }
+
+        for (
+            let j = 0;
+            j < request.length;
+            j++
+        ) {
+
+            if (request[j] < 0) {
+
+                showRequestError(
+                    "Resource request values cannot be negative."
+                );
+
+                return;
+            }
+
+        }
+
+        const requestDecision =
+            document.getElementById(
+                "requestDecision"
+            );
+
+        const requestSteps =
+            document.getElementById(
+                "requestSteps"
+            );
+
+        requestSteps.innerHTML = "";
+
+        /*
+         * CHECK 1:
+         * REQUEST <= NEED
+         */
+
+        const withinNeed =
+            vectorLessThanOrEqual(
+                request,
+                need[process]
+            );
+
+        /*
+         * CHECK 2:
+         * REQUEST <= AVAILABLE
+         */
+
+        const withinAvailable =
+            vectorLessThanOrEqual(
+                request,
+                available
+            );
+
+        let checksHTML = "";
+
+        checksHTML +=
+            '<div class="check-list">';
+
+        if (withinNeed) {
+
+            checksHTML +=
+                '<div class="check-item check-pass">' +
+                '✓ Request ' +
+                formatVector(request) +
+                ' is less than or equal to Need[P' +
+                process +
+                '] ' +
+                formatVector(need[process]) +
+                '</div>';
+
+        } else {
+
+            checksHTML +=
+                '<div class="check-item check-fail">' +
+                '✗ Request ' +
+                formatVector(request) +
+                ' is greater than Need[P' +
+                process +
+                '] ' +
+                formatVector(need[process]) +
+                '</div>';
+
+        }
+
+        if (withinAvailable) {
+
+            checksHTML +=
+                '<div class="check-item check-pass">' +
+                '✓ Request ' +
+                formatVector(request) +
+                ' is less than or equal to Available ' +
+                formatVector(available) +
+                '</div>';
+
+        } else {
+
+            checksHTML +=
+                '<div class="check-item check-fail">' +
+                '✗ Request ' +
+                formatVector(request) +
+                ' is greater than Available ' +
+                formatVector(available) +
+                '</div>';
+
+        }
+
+        checksHTML +=
+            "</div>";
+
+        /*
+         * IF REQUEST IS NOT WITHIN NEED
+         */
+
+        if (!withinNeed) {
+
+            requestDecision.className =
+                "request-decision denied";
+
+            requestDecision.innerHTML =
+                "<strong>REQUEST DENIED</strong>" +
+                "<p style='margin-top:8px;'>" +
+                "The process is requesting more resources than its declared maximum remaining need." +
+                "</p>" +
+                checksHTML;
+
+            return;
+        }
+
+        /*
+         * IF RESOURCES ARE NOT AVAILABLE
+         */
+
+        if (!withinAvailable) {
+
+            requestDecision.className =
+                "request-decision denied";
+
+            requestDecision.innerHTML =
+                "<strong>REQUEST CANNOT BE GRANTED NOW</strong>" +
+                "<p style='margin-top:8px;'>" +
+                "The requested resources are greater than the currently available resources." +
+                "</p>" +
+                checksHTML;
+
+            return;
+        }
+
+        /*
+         * TEMPORARY STATE
+         */
+
+        const temporaryAvailable =
+            subtractVectors(
+                available,
+                request
+            );
+
+        const temporaryAllocation =
+            allocation.map(
+                function (row) {
+                    return row.slice();
+                }
+            );
+
+        const temporaryNeed =
+            need.map(
+                function (row) {
+                    return row.slice();
+                }
+            );
+
+        temporaryAllocation[process] =
+            addVectors(
+                temporaryAllocation[process],
+                request
+            );
+
+        temporaryNeed[process] =
+            subtractVectors(
+                temporaryNeed[process],
+                request
+            );
+
+        /*
+         * TEMPORARY SAFETY TEST
+         */
+
+        const safetyResult =
+            performTemporarySafetyCheck(
+                temporaryAllocation,
+                temporaryNeed,
+                temporaryAvailable
+            );
+
+        requestSteps.innerHTML =
+            '<div class="request-step">' +
+            '<strong>Step 1:</strong> ' +
+            'Check Request &le; Need<br>' +
+            formatVector(request) +
+            ' &le; ' +
+            formatVector(need[process]) +
+            ' → TRUE' +
+            '</div>' +
+
+            '<div class="request-step">' +
+            '<strong>Step 2:</strong> ' +
+            'Check Request &le; Available<br>' +
+            formatVector(request) +
+            ' &le; ' +
+            formatVector(available) +
+            ' → TRUE' +
+            '</div>' +
+
+            '<div class="request-step">' +
+            '<strong>Step 3:</strong> Temporarily allocate the resources.<br>' +
+            'New Available = ' +
+            formatVector(temporaryAvailable) +
+            '</div>' +
+
+            '<div class="request-step">' +
+            '<strong>Step 4:</strong> Run the Safety Algorithm on the temporary state.' +
+            '</div>';
+
+        if (safetyResult.safe) {
+
+            requestDecision.className =
+                "request-decision granted";
+
+            requestDecision.innerHTML =
+                "<strong>REQUEST GRANTED IMMEDIATELY</strong>" +
+
+                "<p style='margin-top:8px;'>" +
+                "All three conditions are satisfied. " +
+                "The request can be granted because the resulting system remains safe." +
+                "</p>" +
+
+                checksHTML +
+
+                "<p style='margin-top:12px;'>" +
+                "<strong>Temporary Available:</strong> " +
+                formatVector(temporaryAvailable) +
+                "</p>" +
+
+                "<p style='margin-top:8px;'>" +
+                "<strong>Safe Sequence After Granting:</strong> " +
+                safetyResult.sequence
+                    .map(function (p) {
+                        return "P" + p;
+                    })
+                    .join(" → ") +
+                "</p>";
+
+        } else {
+
+            requestDecision.className =
+                "request-decision denied";
+
+            requestDecision.innerHTML =
+                "<strong>REQUEST DENIED</strong>" +
+
+                "<p style='margin-top:8px;'>" +
+                "Although the request is within the process need and available resources, " +
+                "granting it would make the system unsafe." +
+                "</p>" +
+
+                checksHTML +
+
+                "<p style='margin-top:12px;'>" +
+                "<strong>Temporary Available:</strong> " +
+                formatVector(temporaryAvailable) +
+                "</p>" +
+
+                "<p style='margin-top:8px;'>" +
+                "Therefore, the Banker's Algorithm does not grant the request." +
+                "</p>";
+        }
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * LOAD CLASSIC EXAMPLE
+     * ------------------------------------------------------------
+     */
+
+    function loadExample() {
+
+        document.getElementById(
+            "processCount"
+        ).value = 5;
+
+        document.getElementById(
+            "resourceCount"
+        ).value = 3;
+
+        document.querySelector(
+            'input[name="resourceMode"][value="total"]'
+        ).checked = true;
+
+        generateMatrices();
+
+        const allocation = [
+            [0, 1, 0],
+            [2, 0, 0],
+            [3, 0, 2],
+            [2, 1, 1],
+            [0, 0, 2]
+        ];
+
+        const maximum = [
+            [7, 5, 3],
+            [3, 2, 2],
+            [9, 0, 2],
+            [2, 2, 2],
+            [4, 3, 3]
+        ];
+
+        const total = [
+            10,
+            5,
+            7
+        ];
+
+        fillMatrix(
+            "allocation-input",
+            allocation
+        );
+
+        fillMatrix(
+            "maximum-input",
+            maximum
+        );
+
+        fillResources(total);
+
+        runBankersAlgorithm();
+
+        loadRequestExample();
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * FILL MATRIX
+     * ------------------------------------------------------------
+     */
+
+    function fillMatrix(
+        className,
+        matrix
+    ) {
+
+        const inputs =
+            document.querySelectorAll(
+                "." + className
+            );
+
+        inputs.forEach(function (input) {
+
+            const row =
+                parseInt(input.dataset.row);
+
+            const col =
+                parseInt(input.dataset.col);
+
+            input.value =
+                matrix[row][col];
+
+        });
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * FILL RESOURCE VECTOR
+     * ------------------------------------------------------------
+     */
+
+    function fillResources(values) {
+
+        const inputs =
+            document.querySelectorAll(
+                ".resource-input"
+            );
+
+        inputs.forEach(function (input) {
+
+            const index =
+                parseInt(
+                    input.dataset.resource
+                );
+
+            input.value =
+                values[index];
+
+        });
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * LOAD REQUEST EXAMPLE
+     * ------------------------------------------------------------
+     */
+
+    function loadRequestExample() {
+
+        const processSelect =
+            document.getElementById(
+                "requestProcess"
+            );
+
+        processSelect.value = "1";
+
+        createRequestVector();
+
+        const inputs =
+            document.querySelectorAll(
+                ".request-vector-input"
+            );
+
+        const request =
+            [1, 0, 2];
+
+        inputs.forEach(function (input) {
+
+            const col =
+                parseInt(
+                    input.dataset.requestCol
+                );
+
+            input.value =
+                request[col] || 0;
+
+        });
+
+        checkResourceRequest();
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * RESET
+     * ------------------------------------------------------------
+     */
+
+    function resetSimulator() {
+
+        document.getElementById(
+            "processCount"
+        ).value = 5;
+
+        document.getElementById(
+            "resourceCount"
+        ).value = 3;
+
+        document.querySelector(
+            'input[name="resourceMode"][value="total"]'
+        ).checked = true;
+
+        generateMatrices();
+
+        clearResults();
+
+        hideError();
+
+        hideRequestError();
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * CLEAR RESULTS
+     * ------------------------------------------------------------
+     */
+
+    function clearResults() {
+
+        const available =
+            document.getElementById(
+                "availableResult"
+            );
+
+        const need =
+            document.getElementById(
+                "needContainer"
+            );
+
+        const steps =
+            document.getElementById(
+                "stepsContainer"
+            );
+
+        const finalResult =
+            document.getElementById(
+                "finalResult"
+            );
+
+        const requestDecision =
+            document.getElementById(
+                "requestDecision"
+            );
+
+        const requestSteps =
+            document.getElementById(
+                "requestSteps"
+            );
+
+        if (available) {
+            available.innerHTML = "";
+        }
+
+        if (need) {
+            need.innerHTML = "";
+        }
+
+        if (steps) {
+            steps.innerHTML = "";
+        }
+
+        if (finalResult) {
+            finalResult.innerHTML = "";
+            finalResult.className = "";
+        }
+
+        if (requestDecision) {
+            requestDecision.innerHTML = "";
+            requestDecision.className =
+                "request-decision";
+        }
+
+        if (requestSteps) {
+            requestSteps.innerHTML = "";
+        }
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * ERROR FUNCTIONS
+     * ------------------------------------------------------------
+     */
+
+    function showError(message) {
+
+        const error =
+            document.getElementById(
+                "errorMessage"
+            );
+
+        error.textContent =
+            message;
+
+        error.style.display =
+            "block";
+    }
+
+
+    function hideError() {
+
+        const error =
+            document.getElementById(
+                "errorMessage"
+            );
+
+        error.style.display =
+            "none";
+
+        error.textContent = "";
+    }
+
+
+    function showRequestError(message) {
+
+        const error =
+            document.getElementById(
+                "requestError"
+            );
+
+        error.textContent =
+            message;
+
+        error.style.display =
+            "block";
+    }
+
+
+    function hideRequestError() {
+
+        const error =
+            document.getElementById(
+                "requestError"
+            );
+
+        error.style.display =
+            "none";
+
+        error.textContent = "";
+    }
+
+</script>
+
+</body>
+</html>
